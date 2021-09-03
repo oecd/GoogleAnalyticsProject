@@ -1,0 +1,39 @@
+{  
+  "reportRequestsSettings": [
+    {      
+      "viewId": "ga:191840875",
+      "dimensions": [
+        { "name": "ga:pagePath" }
+      ],
+      "metrics": [
+        {
+          "expression": "ga:pageviews",
+          "alias": "views"
+        }
+      ],
+      "dimensionFilterClauses": [
+        {
+          "operator": "OR",
+          "filters": [
+            {
+              "dimensionName": "ga:pagePath",
+              "operator": "REGEXP",
+              "expressions": [
+                "read.oecd-ilibrary.org\/view\/\\?ref="
+              ],
+              "caseSensitive": false
+            },
+            {
+              "dimensionName": "ga:pagePath",
+              "operator": "REGEXP",
+              "expressions": [
+                "oecd.org\/coronavirus\/policy-responses\/"
+              ],
+              "caseSensitive": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

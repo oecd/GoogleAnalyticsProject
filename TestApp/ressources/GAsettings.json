@@ -1,0 +1,37 @@
+{  
+  "reportRequestsSettings": [
+    {
+      "name": "Views grouped by pagePath",
+      "dateRanges": [
+        {
+          "startDate": "2021-08-07",
+          "endDate": "2021-08-09"
+        }
+      ],
+      "viewId": "ga:191840875",
+      "dimensions": [
+        { "name": "ga:pagePath" }
+      ],
+      "metrics": [
+        {
+          "expression": "ga:pageviews",
+          "alias": "views"
+        }
+      ],
+      "dimensionFilterClauses": [
+        {
+          "filters": [
+            {
+              "dimensionName": "ga:pagePath",
+              "operator": "REGEXP",
+              "expressions": [
+                "read.oecd-ilibrary.org\/"
+              ],
+              "caseSensitive": false
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
