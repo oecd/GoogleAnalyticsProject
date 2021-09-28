@@ -19,7 +19,7 @@
               "dimensionName": "ga:pagePath",
               "operator": "REGEXP",
               "expressions": [
-                "read.oecd-ilibrary.org\/"
+                "(?:www.)?read.oecd-ilibrary.org\/"
               ],
               "caseSensitive": false
             }
