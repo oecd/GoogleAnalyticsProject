@@ -1,12 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.AnalyticsReporting.v4" Version="1.54.0.2197" />
+    <PackageReference Include="Google.Apis.AnalyticsReporting.v4" Version="1.55.0.2484" />
   </ItemGroup>
 
 </Project>
