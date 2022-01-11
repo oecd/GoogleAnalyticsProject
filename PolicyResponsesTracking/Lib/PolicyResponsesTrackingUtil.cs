@@ -18,7 +18,7 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
         private static readonly string _oecdPattern = @"(?<=-)([A-Za-z0-9]{8})(?=[\/\.\?&])";
 
         // At the very begining of the covid hub, some url didn't contain any id.
-        // Here we have a list of key/value (= "url without id" / "realted id") extracted from the kv3 policy response report (no use to update this list: all PR url has got an id now)
+        // Here we have a list of key/value (= "url without id" / "realted id") extracted from the kv3 policy response report (no use to update this list: all Policy Responses url has got an id now)
         // good to know: for non latin languages (ie: Japanese, Russian), the url is the same as english one. English is choosen as they were published as the begining and the others have been removed from the list.
         private static readonly List<KeyValuePair<string, string>> _listStaticOecdUrls = new()
         {
@@ -335,7 +335,7 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
         };
 
         /// <summary>
-        /// used to filter raw data from GA to get only urls related to PR
+        /// used to filter raw data from GA to get only urls related to Policy Responses
         /// </summary>
         /// <param name="url">url from GA raw data</param>
         /// <returns>boolean result</returns>
@@ -371,7 +371,7 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
                 (url.Contains(_oecdURL)
                 // then match the oecdPattern
                 && Regex.Matches(url + "/", _oecdPattern).Count > 0)
-                // Or last chance case for url without id but are still PR url
+                // Or last chance case for url without id but are still Policy Responses url
                 || GetIdFromOecdURLPart(url).Length > 0;
         }
 
@@ -380,7 +380,7 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
         /// get the policy reponse id
         /// </summary>
         /// <param name="url">url of GA or Kappa report</param>
-        /// <returns>id of the PR (could return many strings, but only one real id, for one url but nervermind the wrong ones will discarded further)</returns>
+        /// <returns>id of the Policy Responses (could return many strings, but only one real id, for one url but nervermind the wrong ones will discarded further)</returns>
         public static string[] GetIdFromUrl(string url)
         {
             //remove all control and other non-printable characters
@@ -400,7 +400,7 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
         /// get the policy reponse id from Read url
         /// </summary>
         /// <param name="url">url from Read url</param>
-        /// <returns>id of the PR</returns>
+        /// <returns>id of the Policy Responses</returns>
         private static string GetIdFromReadUrl(string url)
         {
             // get the part after "...?ref="
@@ -414,7 +414,7 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
         /// get the policy reponse id from Oecd url
         /// </summary>
         /// <param name="url">url of GA or Kappa report</param>
-        /// <returns>id of the PR (could return many as the regexp may match many id patterns (no way to be more selective), but nervermind the wrong ones will discarded further)</returns>
+        /// <returns>id of the Policy Responses (could return many as the regexp may match many id patterns (no way to be more selective), but nervermind the wrong ones will discarded further)</returns>
         private static string[] GetIdFromOecdUrl(string url)
         {
             var matches = Regex.Matches(url + "/", _oecdPattern)
@@ -426,11 +426,11 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
         }
 
         /// <summary>
-        /// get the id of the PR based on a part of the url 
+        /// get the id of the Policy Responses based on a part of the url 
         /// this function is used in the last position order
         /// </summary>
         /// <param name="url">Part of the url</param>
-        /// <returns>id of the PR</returns>
+        /// <returns>id of the Policy Responses</returns>
         private static string GetIdFromOecdURLPart(string url)
         {
             var PRid = string.Empty;
@@ -443,12 +443,30 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
                 }
             }
             return PRid;
+        }        
+
+        /// <summary>
+        /// Simple id replacement (because it said it will stay an execption): some Policy Responses Oecd or read id need to be merged with other one (cf #27494)
+        /// </summary>
+        /// <param name="id">Oecd.org or read id of the Policy Responses</param>
+        /// <returns>replaced id or same one</returns>
+        private static string GetReplacedById(string id)
+        {
+            if (id == "d3e314e1")
+            {
+                return "a2c6abaf";
+            }
+            if (id == "128_128287-5agkkojaaa")
+            {
+                return "1095_1095253-immbk05xb7";
+            }
+            return id;
         }
 
         /// <summary>
-        /// Get a Datatable from the XML document of the PR repor
+        /// Get a Datatable from the XML document of the Policy Responses report
         /// </summary>
-        /// <param name="document">XML document of the PR report</param>
+        /// <param name="document">XML document of the Policy Responses report</param>
         /// <returns>A Datatable ready to be merged with GA data (extra REF column, Dirs and themes splitted)</returns>
         public static DataTable GenerateKappaDataTable(XDocument document)
         {
@@ -539,10 +557,10 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
         }
 
         /// <summary>
-        /// Get raw data from GoogleAnalytics API and returns a datatable filtered : containing only PR with their ids
+        /// Get raw data from GoogleAnalytics API and returns a datatable filtered : containing only Policy Responses with their ids
         /// </summary>
         /// <param name="report">AnalyticReport object generated by GoogleAnalyticsAPI class containing raw data basically filtered</param>
-        /// <returns>A datable with an extra 'REF' column containing the PR id</returns>
+        /// <returns>A datable with an extra 'REF' column containing the Policy Responses id</returns>
         public static DataTable GenerateCleanedDataTable(AnalyticReport report)
         {
             var dt = new DataTable();
@@ -577,7 +595,7 @@ namespace Oecd.PolicyResponsesTrackingUtil.Lib
                     var r = dt.NewRow();
                     var data = new List<string>
                     {
-                        refValue
+                        GetReplacedById(refValue)
                     };
                     data.AddRange(dimensions);
                     data.AddRange(metrics);
