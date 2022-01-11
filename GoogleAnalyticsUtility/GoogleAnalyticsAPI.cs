@@ -92,20 +92,20 @@ namespace Oecd.GoogleAnalyticsUtility
             do
             {
                 string pageToken = response?.Reports[0].NextPageToken;
-                IList<DateRange> dates = TranslateDate(reportRequestsSetting.DateRanges, reportRequestsSetting.DateSpans);
+                IList<DateRange> toDateRanges = TranslateDate(reportRequestsSetting.DateRanges, reportRequestsSetting.DateSpans);
                 var request = BuildReportRequest(
-                   reportRequestsSetting.ViewId,
-                   reportRequestsSetting.Dimensions,
-                   reportRequestsSetting.Metrics,
-                   reportRequestsSetting.DateRanges,
-                   reportRequestsSetting.DimensionFilterClauses,
-                   pageToken);
+                   viewId: reportRequestsSetting.ViewId,
+                   dim: reportRequestsSetting.Dimensions,
+                   metr: reportRequestsSetting.Metrics,
+                   dates: toDateRanges,
+                   dimensionFilterClauses: reportRequestsSetting.DimensionFilterClauses,
+                   pageToken: pageToken);
                 response = request.Execute();
 
                 data.Rows.AddRange(response.Reports.First().Data.Rows);
                 data.ColumnHeader = response.Reports.First().ColumnHeader;
                 data.ReportName = reportRequestsSetting.Name;
-                data.ReportDateSpan = GetReportDateSpan(dates);
+                data.ReportDateSpan = GetReportDateSpan(toDateRanges);
 
             } while (!string.IsNullOrEmpty(response.Reports.First().NextPageToken));
 
