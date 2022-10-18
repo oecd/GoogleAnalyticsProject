@@ -102,6 +102,11 @@ namespace Oecd.GoogleAnalyticsUtility
                    pageToken: pageToken);
                 response = request.Execute();
 
+                if (response.Reports.First().Data.RowCount == null)
+                {
+                    return data;
+                }
+
                 data.Rows.AddRange(response.Reports.First().Data.Rows);
                 data.ColumnHeader = response.Reports.First().ColumnHeader;
                 data.ReportName = reportRequestsSetting.Name;
@@ -125,8 +130,6 @@ namespace Oecd.GoogleAnalyticsUtility
         private ReportsResource.BatchGetRequest BuildReportRequest(
             string viewId, IList<Dimension> dim, IList<Metric> metr, IList<DateRange> dates, IList<DimensionFilterClause> dimensionFilterClauses, string pageToken = null)
         {
-
-
             var reportRequest = new ReportRequest
             {
                 DateRanges = dates,
@@ -254,11 +257,16 @@ namespace Oecd.GoogleAnalyticsUtility
         /// </summary>
         /// <param name="sysConfigPath">Path to the GA system config file containing the reportRequestsSettings template with Dimension, Metrics and dimensionFilterClauses</param>
         /// <param name="userConfigPath">Path to the GA user config file containing reportRequestsSettings with DateRanges or DateSpans</param>
+        /// <param name="filterValue">if any a value used as a dimension filter (ex: country value)</param>
         /// <returns>A merged a GA system config file</returns>
-        public static string MergeSystemAndUserConfigFiles(string sysConfigPath, string userConfigPath)
+        public static string MergeSystemAndUserConfigFiles(string sysConfigPath, string userConfigPath, string filterValue = "")
         {
             StreamReader srSysConfig = new(sysConfigPath);
             string jsonSysConfig = srSysConfig.ReadToEnd();
+            if (!string.IsNullOrEmpty(filterValue))
+            {
+                jsonSysConfig = jsonSysConfig.Replace("#filterValueToBeReplaced#", filterValue);
+            }
             JObject joSysConfig = JObject.Parse(jsonSysConfig);
             JArray jAReportRequestsSettingsTemplate = (JArray)joSysConfig["reportRequestsSettings"];
             // copy all props from the template

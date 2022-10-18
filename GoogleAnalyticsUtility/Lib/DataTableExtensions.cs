@@ -54,6 +54,18 @@ namespace Oecd.GoogleAnalyticsUtility.Lib
             }
             return result;
         }
+
+        /// <summary>
+        /// Combine collection of dataTables
+        /// ASSUMPTION: All tables must have the same columns !
+        /// </summary>
+        /// <param name="args">array of tables to combine</param>
+        /// <returns>combined table</returns>
+        public static DataTable CombineDataTables(params DataTable[] args)
+        {
+            return args.SelectMany(dt => dt.AsEnumerable()).CopyToDataTable();
+        }
+
         /// <summary>
         /// SetOrdinal of DataTable columns based on the index of the columnNames array. Removes invalid column names first.
         /// </summary>
